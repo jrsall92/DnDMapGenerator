@@ -5,8 +5,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
@@ -14,30 +18,59 @@ import javafx.stage.Stage;
 
 public class Main extends Application{
     
+    private static final String numericRegex = "[+]?\\d+$";
     private int xTiles, yTiles;
+    private int width = 100;
+    private int height = 100;
     
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("DnD Map Generator");
     
         generatePopup();
+    
+        GridPane gridPane = generateGridPane();
         
+        Scene scene = new Scene(gridPane, width, height);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    
+    private GridPane generateGridPane() {
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setPadding(new Insets(25));
-    
+        gridPane.setPrefSize(width, height);
+        gridPane.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setHgrow(Priority.ALWAYS);
+        columnConstraints.setFillWidth(true);
+        
+        RowConstraints rowConstraints = new RowConstraints();
+        rowConstraints.setVgrow(Priority.ALWAYS);
+        rowConstraints.setFillHeight(true);
+        
         Button button;
-        for (int i = 0; i < xTiles; i++) {
-            for (int j = 0; j < yTiles; j++) {
-                button = new Button(i + "," + j);
-                button.setOnMouseClicked(event -> System.out.println(((Button) event.getSource()).getText()));
-                gridPane.add(button, i, j);
+        for (int i = 0; i < yTiles; i++) {
+            for (int j = 0; j < xTiles; j++) {
+                button = createButton(i + "," + j);
+                gridPane.add(button, j, i, 1, 1);
+                if(i==0) {
+                    gridPane.getColumnConstraints().add(columnConstraints);
+                }
             }
+            gridPane.getRowConstraints().add(rowConstraints);
         }
+        return gridPane;
+    }
     
-        Scene scene = new Scene(gridPane, 100, 100);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    private Button createButton(String text) {
+        Button button;
+        button = new Button(text);
+        button.setOnMouseClicked(event -> System.out.println(text));
+        button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        return button;
     }
     
     private void generatePopup(){
@@ -53,7 +86,7 @@ public class Main extends Application{
         Button ok = new Button("ok");
         ok.setOnMouseClicked(event -> {
             
-            if(!x.getText().matches("[+]?\\d+$") || !y.getText().matches("[+]?\\d+$")){
+            if(!x.getText().matches(numericRegex) || !y.getText().matches("[+]?\\d+$")){
                 error.setVisible(true);
                 return;
             }
