@@ -3,6 +3,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -39,10 +40,12 @@ public class Main extends Application{
     private int xTiles, yTiles;
     private int width = 1000;
     private int height = 500;
-    
+    private Stage primaryStage;
+
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("DnD Map Generator");
+        this.primaryStage = primaryStage;
+        this.primaryStage.setTitle("DnD Map Generator");
     
         generatePopup();
     
@@ -51,19 +54,7 @@ public class Main extends Application{
         
         MenuItem changeBackground = new MenuItem("Change map...");
         
-        changeBackground.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Select Image");
-            File file = fileChooser.showOpenDialog(primaryStage);
-
-            System.out.println(file.getPath());
-            
-            if(file.getPath().equals("/resources")){
-                System.out.println("hi");
-            }
-            
-           gridPane.setBackground(getBackground(file.getName()));
-        });
+        changeBackground.setOnAction(event -> changeNodeBackground(primaryStage, gridPane));
 
         Menu fileMenu = new Menu("File", null, changeBackground);
         MenuBar menuBar = new MenuBar(fileMenu);
@@ -73,6 +64,20 @@ public class Main extends Application{
         Scene scene = new Scene(rootPane, width, height);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void changeNodeBackground(Stage primaryStage, Region node) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Image");
+        File file = fileChooser.showOpenDialog(primaryStage);
+
+        System.out.println(file.getPath());
+
+        if(file.getPath().equals("/resources")){
+            System.out.println("hi");
+        }
+
+        node.setBackground(getBackground(file.getName()));
     }
 
     private GridPane generateRootPane(GridPane gridPane) {
@@ -116,7 +121,6 @@ public class Main extends Application{
         gridPane.setPadding(new Insets(25));
         gridPane.setPrefSize(width, height);
         gridPane.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        //language=file-reference
         gridPane.setBackground(getBackground("little_tavern__1st_floor__by_daceyrose_rpg-d67pt64.jpg"));
         
         ColumnConstraints columnConstraints = new ColumnConstraints();
@@ -154,6 +158,17 @@ public class Main extends Application{
         button = new Button(text);
         button.setOnMouseClicked(event -> System.out.println(text));
         button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        
+        button.setOnContextMenuRequested(event -> {
+            MenuItem changeBackground = new MenuItem("Change background");
+            changeBackground.setOnAction(event1 -> changeNodeBackground(primaryStage, button));
+            
+            MenuItem removeBackground = new MenuItem("Remove background");
+            removeBackground.setOnAction(event1 -> button.setBackground(Background.EMPTY));
+            
+            ContextMenu contextMenu = new ContextMenu(changeBackground, removeBackground);
+            contextMenu.show(primaryStage, event.getScreenX(), event.getScreenY());
+        });
 
         BorderStroke borderStroke = new BorderStroke(Color.valueOf("black"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
                                                      BorderWidths.DEFAULT);        
