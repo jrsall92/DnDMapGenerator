@@ -1,4 +1,4 @@
-import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
@@ -11,10 +11,16 @@ import java.io.File;
 
 public class NodeUtils {
 
-    public static Background getBackground(String path) {
-        BackgroundImage backgroundImage = new BackgroundImage(new Image(path), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, null,
+    public static Background getBackground(String path, Region node) {
+        ImageView image = new ImageView(path);
+        image.setPreserveRatio(true);
+        
+        image.fitHeightProperty().bind(node.heightProperty());
+        image.fitWidthProperty().bind(node.widthProperty());
+        
+        BackgroundImage backgroundImage = new BackgroundImage(image.getImage(), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, null,
                 new BackgroundSize(0,0, false, false,
-                        false, true));
+                        true, false));
 
         return new Background(backgroundImage);
     }
@@ -30,6 +36,6 @@ public class NodeUtils {
             System.out.println("hi");
         }
 
-        node.setBackground(getBackground(file.getName()));
+        node.setBackground(getBackground(file.getName(), node));
     }
 }

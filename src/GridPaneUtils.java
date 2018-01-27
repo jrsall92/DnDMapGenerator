@@ -68,8 +68,8 @@ public class GridPaneUtils {
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setPadding(new Insets(25));
         gridPane.setPrefSize(width, height);
+        gridPane.setBackground(NodeUtils.getBackground("little_tavern__1st_floor__by_daceyrose_rpg-d67pt64.jpg", gridPane));
         gridPane.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        gridPane.setBackground(NodeUtils.getBackground("little_tavern__1st_floor__by_daceyrose_rpg-d67pt64.jpg"));
 
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setHgrow(Priority.ALWAYS);

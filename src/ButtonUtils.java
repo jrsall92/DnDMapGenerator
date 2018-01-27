@@ -64,7 +64,7 @@ public class ButtonUtils {
             boolean success = false;
             if(db.hasString()) {
 
-                button.setBackground(NodeUtils.getBackground(db.getString()));
+                button.setBackground(NodeUtils.getBackground(db.getString(), button));
                 button.setAccessibleText(db.getString());
 
                 ((Button) event.getGestureSource()).setBackground(Background.EMPTY);
