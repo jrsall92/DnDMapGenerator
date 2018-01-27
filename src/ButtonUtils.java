@@ -22,8 +22,8 @@ public class ButtonUtils {
 
         setUpButtonActions(button, primaryStage);
 
-        BorderStroke borderStroke = new BorderStroke(Color.valueOf("black"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
-                BorderWidths.DEFAULT);
+        BorderStroke borderStroke = new BorderStroke(Color.valueOf("white"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
+                new BorderWidths(0.3));
         button.setBorder(new Border(borderStroke));
         button.setBackground(Background.EMPTY);
         return button;
@@ -87,8 +87,8 @@ public class ButtonUtils {
         });
 
         button.setOnDragExited(event -> {
-            BorderStroke borderStroke = new BorderStroke(Color.valueOf("black"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
-                    BorderWidths.DEFAULT);
+            BorderStroke borderStroke = new BorderStroke(Color.valueOf("white"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
+                    new BorderWidths(0.3));
 
             button.setBorder(new Border(borderStroke));
 
