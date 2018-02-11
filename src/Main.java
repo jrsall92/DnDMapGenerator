@@ -6,6 +6,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -19,6 +20,7 @@ public class Main extends Application{
     private int xTiles, yTiles;
     private int width = 1000;
     private int height = 500;
+    private Scene scene;
 
     @Override
     public void start(Stage primaryStage) {
@@ -29,24 +31,23 @@ public class Main extends Application{
         GridPaneUtils gridPaneUtils = new GridPaneUtils(width, height, xTiles, yTiles, primaryStage);
         
         GridPane gridPane = gridPaneUtils.generateGridPane();
-        GridPane rootPane = gridPaneUtils.generateRootPane(gridPane);
+        MenuBar menuBar = constructMenuBar(primaryStage, gridPane);
+        BorderPane rootPane = new BorderPane(gridPane, menuBar, null, null, null);
 
-        constructMenuBar(primaryStage, gridPane, rootPane);
-        
-        Scene scene = new Scene(rootPane, width, height);
+        scene = new Scene(rootPane, width, height);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    private void constructMenuBar(Stage primaryStage, GridPane gridPane, GridPane rootPane) {
+    private MenuBar constructMenuBar(Stage primaryStage, GridPane gridPane) {
         MenuItem changeBackground = new MenuItem("Change map...");
-
         changeBackground.setOnAction(event -> NodeUtils.changeNodeBackground(primaryStage, gridPane));
-
-        Menu fileMenu = new Menu("File", null, changeBackground);
-        MenuBar menuBar = new MenuBar(fileMenu);
-
-        rootPane.add(menuBar, 0, 0, 3, 1);
+        
+        MenuItem snapshot = new MenuItem("Snapshot");
+        snapshot.setOnAction(event -> NodeUtils.saveSnapshot(primaryStage, gridPane));
+        
+        Menu fileMenu = new Menu("File", null, changeBackground, snapshot);
+        return new MenuBar(fileMenu);
     }
 
     private void generatePopup(){
@@ -62,13 +63,13 @@ public class Main extends Application{
         Button ok = new Button("ok");
         ok.setOnMouseClicked(event -> {
             
-            if(!x.getText().matches(numericRegex) || !y.getText().matches("[+]?\\d+$")){
+            if(!x.getText().trim().matches(numericRegex) || !y.getText().trim().matches("[+]?\\d+$")){
                 error.setVisible(true);
                 return;
             }
             
-            xTiles = Integer.parseInt(x.getText());
-            yTiles = Integer.parseInt(y.getText());
+            xTiles = Integer.parseInt(x.getText().trim());
+            yTiles = Integer.parseInt(y.getText().trim());
             newStage.close();
         });
         

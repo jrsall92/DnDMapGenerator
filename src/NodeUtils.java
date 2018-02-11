@@ -1,13 +1,20 @@
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
 
 public class NodeUtils {
 
@@ -19,8 +26,7 @@ public class NodeUtils {
         image.fitWidthProperty().bind(node.widthProperty());
         
         BackgroundImage backgroundImage = new BackgroundImage(image.getImage(), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, null,
-                new BackgroundSize(0,0, false, false,
-                        true, false));
+                new BackgroundSize(0,0, false, false, true, false));
 
         return new Background(backgroundImage);
     }
@@ -37,5 +43,18 @@ public class NodeUtils {
         }
 
         node.setBackground(getBackground(file.getName(), node));
+    }
+
+    public static void saveSnapshot(Stage primaryStage, GridPane grid) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Image");
+        File file = fileChooser.showSaveDialog(primaryStage);
+
+        WritableImage writableImage = grid.snapshot(new SnapshotParameters(), null);
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png", file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
